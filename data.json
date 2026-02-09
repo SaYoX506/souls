@@ -1,0 +1,22 @@
+{
+  "users": {
+    "h.xkn": {
+      "username": "h.xkn",
+      "password": "1",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=hxkn",
+      "level": 0,
+      "xp": 0,
+      "maxXp": 100,
+      "auditLog": []
+    },
+    "Chidori": {
+      "username": "Chidori",
+      "password": "1",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=chidori",
+      "level": 0,
+      "xp": 0,
+      "maxXp": 100,
+      "auditLog": []
+    }
+  }
+}

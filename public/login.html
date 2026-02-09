@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soul's | Identity HUB</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="bg-vfx"></div>
+
+    <!-- Selection Screen -->
+    <div id="selectionScreen" class="flex flex-col items-center gap-12 z-10">
+        <h1 class="text-5xl font-extrabold tracking-tighter italic text-white">Soul's</h1>
+        <div class="flex gap-12">
+            <div onclick="initUser('hxkn')" class="cursor-pointer group flex flex-col items-center gap-4">
+                <div class="relative w-32 h-32">
+                    <div
+                        class="absolute inset-0 border-2 border-white/0 rounded-[32px] group-hover:border-white/50 transition-all scale-110">
+                    </div>
+                    <img id="sel-hxkn-img"
+                        class="w-32 h-32 rounded-[32px] border border-neutral-800 transition-all bg-neutral-900 object-cover shadow-2xl">
+                </div>
+                <span
+                    class="font-bold text-neutral-600 group-hover:text-white uppercase tracking-[0.3em] text-[10px]">h.xkn</span>
+            </div>
+            <div onclick="initUser('chidori')" class="cursor-pointer group flex flex-col items-center gap-4">
+                <div class="relative w-32 h-32">
+                    <div
+                        class="absolute inset-0 border-2 border-white/0 rounded-[32px] group-hover:border-white/50 transition-all scale-110">
+                    </div>
+                    <img id="sel-chidori-img"
+                        class="w-32 h-32 rounded-[32px] border border-neutral-800 transition-all bg-neutral-900 object-cover shadow-2xl">
+                </div>
+                <span
+                    class="font-bold text-neutral-600 group-hover:text-white uppercase tracking-[0.3em] text-[10px]">Chidori</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold mb-8">Access Key</h2>
+            <input type="password" id="loginPass" class="input-minimal bg-white/5 border-white/10 mb-6"
+                placeholder="Enter Key">
+            <div class="flex flex-col gap-3">
+                <button onclick="confirmLogin()" class="btn-action bg-white text-black">Verify Account</button>
+                <button onclick="skipLogin()"
+                    class="text-[10px] text-neutral-600 font-bold uppercase tracking-widest py-2">Guest Access</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+
+</html>

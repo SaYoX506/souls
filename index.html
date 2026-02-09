@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soul's | Identity HUB</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --glow-color: #ffffff;
+            --text-color: #ffffff;
+            --bar-color: #ffffff;
+            --profile-bg: #000000;
+        }
+
+        body {
+            background-color: #000;
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Background VFX */
+        .bg-vfx {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, #050505 0%, #000 100%);
+            z-index: -1;
+        }
+
+        .bg-vfx::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url('https://www.transparenttextures.com/patterns/dark-matter.png');
+            opacity: 0.1;
+            animation: drift 60s linear infinite;
+        }
+
+        @keyframes drift {
+            from {
+                background-position: 0 0;
+            }
+
+            to {
+                background-position: 1000px 1000px;
+            }
+        }
+
+        /* Window Container */
+        .window-wrapper {
+            position: relative;
+            width: 440px;
+            height: 640px;
+            padding: 2px;
+        }
+
+        .window-glow {
+            position: absolute;
+            inset: 0;
+            border: 2px solid var(--glow-color);
+            border-radius: 34px;
+            pointer-events: none;
+            box-shadow: 0 0 30px var(--glow-color), inset 0 0 15px var(--glow-color);
+            opacity: 0.4;
+            z-index: 50;
+            animation: pulse-glow 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.005);
+            }
+        }
+
+        .window-main {
+            width: 100%;
+            height: 100%;
+            background: var(--profile-bg);
+            border-radius: 32px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: relative;
+            scrollbar-width: thin;
+            scrollbar-color: var(--text-color) transparent;
+            scroll-behavior: smooth;
+        }
+
+        .window-main::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .window-main::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .window-main::-webkit-scrollbar-thumb {
+            background: var(--text-color);
+            opacity: 0.2;
+            border-radius: 10px;
+        }
+
+        .banner {
+            height: 160px;
+            background: rgba(128, 128, 128, 0.05);
+            position: relative;
+        }
+
+        .avatar-container {
+            position: absolute;
+            bottom: -50px;
+            left: 24px;
+            width: 110px;
+            height: 110px;
+            border-radius: 28px;
+            background: var(--profile-bg);
+            padding: 5px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 24px;
+            object-fit: cover;
+            background: rgba(128, 128, 128, 0.1);
+        }
+
+        .content {
+            padding: 64px 28px 28px;
+        }
+
+        /* XP Bar UX Visibility Fixes */
+        .xp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+        }
+
+        .xp-bar-container {
+            height: 6px;
+            background: rgba(128, 128, 128, 0.1);
+            border-radius: 10px;
+            margin: 30px 0 20px;
+            position: relative;
+            border: 1px solid rgba(128, 128, 128, 0.05);
+        }
+
+        .xp-bar-fill {
+            height: 100%;
+            background: var(--bar-color);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 0 15px var(--bar-color);
+        }
+
+        .xp-points-labels {
+            position: absolute;
+            top: -24px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 2px;
+            pointer-events: none;
+        }
+
+        .xp-point-val {
+            font-size: 8px;
+            font-weight: 800;
+            color: var(--text-color);
+            opacity: 0.3;
+            text-transform: uppercase;
+        }
+
+        .xp-point-val.active {
+            opacity: 1;
+        }
+
+        .nav-dots {
+            display: flex;
+            justify-content: space-between;
+            position: absolute;
+            top: 50%;
+            left: 2px;
+            right: 2px;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        .dot {
+            width: 3px;
+            height: 3px;
+            background: var(--text-color);
+            opacity: 0.1;
+            border-radius: 50%;
+        }
+
+        .dot.active {
+            opacity: 0.4;
+        }
+
+        /* Buttons & Inputs */
+        .btn-action {
+            background: var(--text-color);
+            color: var(--profile-bg);
+            padding: 12px 20px;
+            border-radius: 16px;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-action:hover {
+            opacity: 0.8;
+            transform: translateY(-2px);
+        }
+
+        .input-minimal {
+            background: rgba(128, 128, 128, 0.05);
+            border: 1px solid rgba(128, 128, 128, 0.1);
+            color: var(--text-color);
+            padding: 12px 16px;
+            border-radius: 16px;
+            outline: none;
+            width: 100%;
+            transition: border-color 0.2s;
+        }
+
+        .input-minimal:focus {
+            border-color: var(--glow-color);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #000;
+            border: 1px solid #111;
+            border-radius: 32px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 32px;
+            position: relative;
+            color: #fff;
+        }
+
+        .log-item {
+            background: rgba(128, 128, 128, 0.05);
+            border: 1px solid rgba(128, 128, 128, 0.05);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .log-emoji {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .reward-card {
+            background: rgba(128, 128, 128, 0.05);
+            border: 1px solid rgba(128, 128, 128, 0.05);
+            padding: 14px;
+            border-radius: 18px;
+            cursor: pointer;
+        }
+
+        .reward-card:hover {
+            border-color: var(--text-color);
+        }
+
+        .emoji-picker-container {
+            background: #000;
+            border: 1px solid #111;
+            border-radius: 24px;
+            padding: 16px;
+            margin-top: 10px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg-vfx"></div>
+
+    <!-- Selection Screen -->
+    <div id="selectionScreen" class="flex flex-col items-center gap-12 z-10">
+        <h1 class="text-5xl font-extrabold tracking-tighter italic text-white">Soul's</h1>
+        <div class="flex gap-12">
+            <div onclick="initUser('hxkn')" class="cursor-pointer group flex flex-col items-center gap-4">
+                <div class="relative w-32 h-32">
+                    <div
+                        class="absolute inset-0 border-2 border-white/0 rounded-[32px] group-hover:border-white/50 transition-all scale-110">
+                    </div>
+                    <img id="sel-hxkn-img"
+                        class="w-32 h-32 rounded-[32px] border border-neutral-800 transition-all bg-neutral-900 object-cover shadow-2xl">
+                </div>
+                <span
+                    class="font-bold text-neutral-600 group-hover:text-white uppercase tracking-[0.3em] text-[10px]">h.xkn</span>
+            </div>
+            <div onclick="initUser('chidori')" class="cursor-pointer group flex flex-col items-center gap-4">
+                <div class="relative w-32 h-32">
+                    <div
+                        class="absolute inset-0 border-2 border-white/0 rounded-[32px] group-hover:border-white/50 transition-all scale-110">
+                    </div>
+                    <img id="sel-chidori-img"
+                        class="w-32 h-32 rounded-[32px] border border-neutral-800 transition-all bg-neutral-900 object-cover shadow-2xl">
+                </div>
+                <span
+                    class="font-bold text-neutral-600 group-hover:text-white uppercase tracking-[0.3em] text-[10px]">Chidori</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold mb-8">Access Key</h2>
+            <input type="password" id="loginPass" class="input-minimal bg-white/5 border-white/10 mb-6"
+                placeholder="Enter Key">
+            <div class="flex flex-col gap-3">
+                <button onclick="confirmLogin()" class="btn-action bg-white text-black">Verify Account</button>
+                <button onclick="skipLogin()"
+                    class="text-[10px] text-neutral-600 font-bold uppercase tracking-widest py-2">Guest Access</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Window Wrapper -->
+    <div id="mainWindow" class="window-wrapper hidden">
+        <div class="window-glow" id="winGlow"></div>
+        <div class="window-main">
+            <!-- Banner & Avatar -->
+            <div id="winBanner" class="banner">
+                <div class="avatar-container">
+                    <img id="winAvatarImg" class="avatar-img">
+                </div>
+                <button onclick="logout()"
+                    class="absolute top-6 left-6 bg-black/40 p-2.5 rounded-2xl hover:bg-black/60 transition-colors">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <div class="absolute top-6 right-6 flex gap-3">
+                    <button id="addBtn" onclick="openActionModal()"
+                        class="hidden bg-black/40 p-2.5 rounded-2xl hover:bg-black/60 transition-colors">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                        </svg>
+                    </button>
+                    <button id="editBtn" onclick="openEditModal()"
+                        class="hidden bg-black/40 p-2.5 rounded-2xl hover:bg-black/60 transition-colors">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
+                            viewBox="0 0 24 24">
+                            <path
+                                d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content">
+                <div class="flex items-center gap-3 mb-2">
+                    <h2 id="winName" class="text-3xl font-bold tracking-tight">Username</h2>
+                    <div id="authStatus" class="hidden w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_10px_#22c55e]">
+                    </div>
+                </div>
+                <p class="text-neutral-500 font-bold uppercase tracking-[0.2em] text-[10px] mb-8">Evolution Tier <span
+                        id="winLevelNum" class="text-inherit">0</span></p>
+
+                <!-- XP System -->
+                <div class="xp-header font-bold uppercase tracking-[0.2em] text-[9px]">
+                    <span class="opacity-40">Target Progression</span>
+                    <span id="winXPStatus" class="tracking-widest">0 / 0 XP</span>
+                </div>
+                <div class="xp-bar-container">
+                    <div id="xpLabelPoints" class="xp-points-labels"></div>
+                    <div id="winXPBar" class="xp-bar-fill"></div>
+                    <div id="winXPDots" class="nav-dots"></div>
+                </div>
+
+                <!-- Global Navigation (View Rewards) -->
+                <div id="viewLevelCard"
+                    class="flex items-center justify-between mb-10 bg-[rgba(128,128,128,0.05)] p-4 rounded-3xl border border-[rgba(128,128,128,0.05)]">
+                    <button onclick="navViewLevel(-1)" class="opacity-40 hover:opacity-100 transition-opacity"><svg
+                            width="24" height="24" fill="currentColor">
+                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+                        </svg></button>
+                    <div class="text-center w-40">
+                        <span id="viewLvlLabel"
+                            class="text-[9px] opacity-40 font-bold uppercase tracking-[0.3em] block mb-1">Tier 0</span>
+                        <p id="viewLvlReward" class="text-xs font-bold tracking-tight">Starting Hub</p>
+                    </div>
+                    <button onclick="navViewLevel(1)" class="opacity-40 hover:opacity-100 transition-opacity"><svg
+                            width="24" height="24" fill="currentColor">
+                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+                        </svg></button>
+                </div>
+
+                <h3 class="text-[9px] font-bold opacity-30 uppercase tracking-[0.4em] mb-4">Logs</h3>
+                <div id="winLogs" class="space-y-3">
+                    <!-- Logs -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h3 class="text-xl font-bold mb-8">Identity Configuration</h3>
+            <div class="space-y-6">
+                <div>
+                    <label class="text-[9px] text-neutral-600 font-bold uppercase tracking-widest mb-2 block">Display
+                        Name</label>
+                    <input type="text" id="editName" class="input-minimal bg-white/5">
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-[9px] text-neutral-600 font-bold uppercase tracking-widest mb-2 block">Avatar
+                            URL / Path</label>
+                        <input type="text" id="editAvatarUrl" class="input-minimal bg-white/5"
+                            placeholder="e.g. /useravatarandbanner/h.xkn.png">
+                    </div>
+                    <div>
+                        <label class="text-[9px] text-neutral-600 font-bold uppercase tracking-widest mb-2 block">Banner
+                            URL / Path</label>
+                        <input type="text" id="editBannerUrl" class="input-minimal bg-white/5"
+                            placeholder="e.g. https://yourdomain.com/banner.jpg">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 pb-4">
+                    <label
+                        class="btn-action bg-neutral-800 text-white text-[9px] uppercase py-3.5 text-center cursor-pointer">Upload
+                        Avatar
+                        <input type="file" onchange="handleImage(this, 'avatar')">
+                    </label>
+                    <label
+                        class="btn-action bg-neutral-800 text-white text-[9px] uppercase py-3.5 text-center cursor-pointer">Upload
+                        Banner
+                        <input type="file" onchange="handleImage(this, 'banner')">
+                    </label>
+                </div>
+
+                <div class="border-t border-neutral-900 pt-6">
+                    <label class="text-[9px] text-neutral-600 font-bold uppercase tracking-widest mb-4 block">Identity
+                        Theming</label>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <label class="text-[8px] text-neutral-700 font-bold uppercase mb-2 block">Glow Color</label>
+                            <input type="color" id="editColorGlow"
+                                class="w-full h-10 p-0 border-none bg-transparent cursor-pointer">
+                        </div>
+                        <div>
+                            <label class="text-[8px] text-neutral-700 font-bold uppercase mb-2 block">Text Color</label>
+                            <input type="color" id="editColorText"
+                                class="w-full h-10 p-0 border-none bg-transparent cursor-pointer">
+                        </div>
+                        <div>
+                            <label class="text-[8px] text-neutral-700 font-bold uppercase mb-2 block">XP Bar
+                                Color</label>
+                            <input type="color" id="editColorBar"
+                                class="w-full h-10 p-0 border-none bg-transparent cursor-pointer">
+                        </div>
+                        <div>
+                            <label class="text-[8px] text-neutral-700 font-bold uppercase mb-2 block">Profile BG
+                                Color</label>
+                            <input type="color" id="editColorBg"
+                                class="w-full h-10 p-0 border-none bg-transparent cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-neutral-900 pt-6">
+                    <label class="text-[9px] text-neutral-600 font-bold uppercase tracking-widest mb-2 block">Access
+                        Logic</label>
+                    <input type="password" id="editPass" class="input-minimal bg-white/5"
+                        placeholder="Modify security key">
+                </div>
+            </div>
+            <div class="flex gap-4 mt-12">
+                <button onclick="saveProfile()" class="flex-1 btn-action bg-white text-black">Apply Changes</button>
+                <button onclick="closeModals()"
+                    class="flex-1 text-neutral-600 font-bold uppercase text-[9px] tracking-widest">Abort</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Modal -->
+    <div id="actionModal" class="modal">
+        <div class="modal-content">
+            <div class="flex gap-1 mb-8">
+                <button id="tab-xp" onclick="setActionTab('xp')"
+                    class="flex-1 py-3.5 rounded-2xl font-bold uppercase text-[9px] tracking-widest transition-all">XP
+                    Mod</button>
+                <button id="tab-rewards" onclick="setActionTab('rewards')"
+                    class="flex-1 py-3.5 rounded-2xl font-bold uppercase text-[9px] tracking-widest transition-all">Rewards</button>
+            </div>
+
+            <div id="pane-xp" class="space-y-6">
+                <div>
+                    <label class="text-[9px] text-neutral-600 font-bold uppercase tracking-widest mb-2 block">XP</label>
+                    <input type="number" id="xpAmount" class="input-minimal" placeholder="Amount (e.g. 25)">
+                </div>
+                <div>
+                    <label class="text-[9px] text-neutral-600 font-bold uppercase tracking-widest mb-2 block">Reason /
+                        Event</label>
+                    <input type="text" id="xpReason" class="input-minimal" placeholder="Reason for change">
+                </div>
+                <div>
+                    <label
+                        class="text-[9px] text-neutral-600 font-bold uppercase tracking-widest mb-2 block">Emoji</label>
+                    <div class="flex items-center gap-4 bg-[rgba(128,128,128,0.05)] p-3 rounded-2xl">
+                        <img id="selectedEmojiImg" src="emojis/1019-c-cry.gif" class="w-10 h-10 object-contain">
+                        <button onclick="toggleEmojiPicker()"
+                            class="text-[9px] font-bold uppercase tracking-widest">Select Signal</button>
+                    </div>
+                    <div id="emojiPicker" class="emoji-picker-container hidden"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 pt-4">
+                    <button onclick="applyXP(true)" class="btn-action bg-white text-black">Add +</button>
+                    <button onclick="applyXP(false)" class="btn-action bg-neutral-900 text-white">Remove -</button>
+                </div>
+                <div class="border-t border-neutral-900 pt-6">
+                    <label class="text-[9px] text-neutral-600 font-bold uppercase tracking-widest mb-2 block">Manual
+                        Tier Jump</label>
+                    <div class="flex gap-2">
+                        <input type="number" id="jumpLevel" class="input-minimal" placeholder="Tier 1-100">
+                        <button onclick="applyLevelJump()" class="btn-action bg-white text-black px-6">Jump</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pane-rewards" class="hidden">
+                <div id="rewardsGrid" class="grid grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pr-2"></div>
+            </div>
+            <button onclick="closeModals()"
+                class="w-full mt-8 text-neutral-600 font-bold uppercase text-[9px] tracking-widest">Close
+                System</button>
+        </div>
+    </div>
+
+    <div id="setRewardModal" class="modal" style="z-index:300">
+        <div class="modal-content">
+            <h3 class="text-xl font-bold mb-2">Configure Tier <span id="rewardSetLvl">0</span></h3>
+            <p class="text-[9px] text-neutral-600 font-bold uppercase tracking-widest mb-8">Set progression reward</p>
+            <input type="text" id="rewardInput" class="input-minimal mb-8" placeholder="Enter Description">
+            <div class="flex gap-4">
+                <button onclick="confirmReward()" class="flex-1 btn-action bg-white text-black">Update Tier</button>
+                <button onclick="closeRewardModal()"
+                    class="flex-1 text-neutral-600 font-bold uppercase text-[9px] tracking-widest">Abort</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
