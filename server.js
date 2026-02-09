@@ -109,7 +109,13 @@ app.post('/upload', upload.single('image'), async (req, res) => {
     res.json({ path: `useravatarandbanner/${filename}` });
 });
 
-app.listen(port, () => {
-    console.log(`✅ Soul's Server running at http://localhost:${port}`);
-    console.log(`📂 Serving public folder`);
-});
+// Export for Vercel (Serverless)
+module.exports = app;
+
+// Start Server (Local Only)
+if (require.main === module) {
+    app.listen(port, () => {
+        console.log(`✅ Soul's Server running at http://localhost:${port}`);
+        console.log(`📂 Serving public folder`);
+    });
+}
