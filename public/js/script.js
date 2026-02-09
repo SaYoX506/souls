@@ -47,8 +47,25 @@ window.onload = async () => {
     try {
         const res = await fetch('/api/data');
         if (res.ok) {
-            db = await res.json();
-            console.log('Loaded Cloud Data');
+            const cloudData = await res.json();
+            // Deep merge or fallback to default
+            if (cloudData && (cloudData.hxkn || cloudData.chidori)) {
+                db = { ...db, ...cloudData }; // Merge cloud data on top of defaults
+                console.log('✅ Cloud Data Merged');
+            } else if (cloudData && cloudData.users) {
+                // Handle Migration from Old JSON format
+                console.log('⚠️ Detected Old Data Format - Migrating...');
+                if (cloudData.users['h.xkn']) {
+                    db.hxkn.level = cloudData.users['h.xkn'].level || 0;
+                    db.hxkn.xp = cloudData.users['h.xkn'].xp || 0;
+                }
+                if (cloudData.users['Chidori']) {
+                    db.chidori.level = cloudData.users['Chidori'].level || 0;
+                    db.chidori.xp = cloudData.users['Chidori'].xp || 0;
+                }
+            } else {
+                console.warn('⚠️ Cloud Data Invalid - Using Defaults');
+            }
         }
     } catch (e) {
         console.error('Offline or First Run', e);
@@ -115,10 +132,11 @@ const getCacheBustUrl = (url) => {
 };
 
 function refreshSelectionAvatars() {
+    if (!db.hxkn || !db.chidori) return;
     const hImg = getCacheBustUrl(db.hxkn.avatarUrl || db.hxkn.avatar) || `https://api.dicebear.com/7.x/shapes/svg?seed=hxkn`;
     const cImg = getCacheBustUrl(db.chidori.avatarUrl || db.chidori.avatar) || `https://api.dicebear.com/7.x/shapes/svg?seed=chidori`;
-    document.getElementById('sel-hxkn-img').src = hImg;
-    document.getElementById('sel-chidori-img').src = cImg;
+    if (document.getElementById('sel-hxkn-img')) document.getElementById('sel-hxkn-img').src = hImg;
+    if (document.getElementById('sel-chidori-img')) document.getElementById('sel-chidori-img').src = cImg;
 }
 
 // --- Login Page Logic ---
@@ -132,6 +150,8 @@ function initUser(id) {
 
 function confirmLogin() {
     const input = document.getElementById('loginPass').value;
+    if (!currentUser) return showToast("Select a user first", "error");
+
     if (currentUser.password === null) {
         if (!input) return alert("Key required");
         currentUser.password = input;
