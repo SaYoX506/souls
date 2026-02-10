@@ -38,6 +38,34 @@ app.get('/api/emojis', (req, res) => {
         res.json(emojis);
     });
 });
+});
+
+// PRIVATE IMAGE PROXY (For Private Repos)
+// Usage: /proxy-image?url=https://raw.githubusercontent.com/...
+app.get('/proxy-image', async (req, res) => {
+    const imageUrl = req.query.url;
+    if (!imageUrl) return res.status(400).send('Missing URL');
+
+    const token = process.env.GITHUB_TOKEN;
+    if (!token) return res.redirect(imageUrl); // Fallback if no token
+
+    try {
+        // Fetch with Authorization header
+        const response = await fetch(imageUrl, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) return res.status(response.status).send('Failed to fetch image');
+
+        // Stream image back to client
+        const buffer = await response.arrayBuffer();
+        res.set('Content-Type', response.headers.get('content-type'));
+        res.send(Buffer.from(buffer));
+    } catch (e) {
+        console.error('Proxy Error:', e);
+        res.status(500).send('Proxy Error');
+    }
+});
 
 
 

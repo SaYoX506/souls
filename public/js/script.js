@@ -179,7 +179,12 @@ const getCacheBustUrl = (url) => {
     const cleanUrl = getImgPath(url);
     // Always append random timestamp to user uploads to bypass browser/CDN cache
     if (cleanUrl.includes('useravatarandbanner')) {
-        return `${cleanUrl}?v=${Date.now()}_${Math.random().toString(36).slice(2)}`;
+        const fullUrl = `${cleanUrl}?v=${Date.now()}`;
+        // If serving from raw.githubusercontent, use proxy
+        if (fullUrl.startsWith('https://raw.githubusercontent.com') && !fullUrl.includes('proxy-image')) {
+            return `/proxy-image?url=${encodeURIComponent(fullUrl)}`;
+        }
+        return fullUrl;
     }
     return cleanUrl;
 };
@@ -604,12 +609,15 @@ async function save() {
 
     showToast("Syncing...", "success");
     try {
-        await fetch('/api/save', {
+        const res = await fetch('/api/save', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(db)
         });
+        if (!res.ok) throw new Error(`Server Error: ${res.status}`);
+        showToast("Saved to Cloud", "success");
     } catch (e) {
-        showToast("Sync Failed", "error");
+        console.error(e);
+        showToast("Sync Failed: Check GitHub Token", "error");
     }
 }
