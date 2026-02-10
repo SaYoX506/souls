@@ -27,22 +27,25 @@ const IS_DASHBOARD_PAGE = !!document.getElementById('mainWindow');
 
 // Emoji Files (Mapped to /emojis route)
 // Emojis will be loaded from server
-let EMOJI_FILES = [];
+// Hardcoded Emoji List for Reliability (Vercel/Cloud)
+const EMOJI_FILES = [
+    "1019-c-cry.gif", "1022-c-photo.gif", "1089-scarletgun.png", "11453-moderniadum.png", "1186-taiga-stare.png",
+    "1272-boyfighting.png", "1335-bleh.png", "13554-kaorukodevilishsmile.png", "1359-c-wow.gif", "1493-c-twirl.gif",
+    "1538-marinkitagawa-smile.gif", "1573-d-gimme.gif", "1576-boyangry.png", "1593-c-tears.gif", "1626-marinkitagawa-blush.gif",
+    "16329-aqua-crying.png", "163320-usamiangry.png", "1660-giggle.gif", "168691-sakugun.png", "1720-kanna-uhh.png",
+    "17302-anime-albedoscold.png", "175089-anyasly.png", "17963-reigun.png", "1848-marinkitagawa-sad.gif", "19168-boring.png",
+    "2051-kitagawa-embarrassed.png", "21315-thinking.png", "213792-kaorukocute.png", "2146-c-bite.gif", "227860-kaorukodisgust.png",
+    "229140-kyokosigh.png", "2322-shyasf.gif", "23410-taigablush.gif", "2371-marin-touched.png", "2393_bakuNO.png",
+    "239945-anyadisgust.png", "2415-100-kannapat.gif", "2425-marin-peak.png", "24878-cute-shy-anime-girl.png", "2575_Suicidekanna.png",
+    "2590-marin-shy.gif", "2594-laugh.gif", "2598-doroshifty.png", "2630-marinkitagawa-freaked.gif", "2825-boyconfused.png"
+];
 
-// Fetch Emojis from API
-async function setupEmojis() {
-    try {
-        const res = await fetch('/api/emojis');
-        if (res.ok) {
-            EMOJI_FILES = await res.json();
-            // Map legacy objects if needed, but simple array is fine for now
-            emojisList = EMOJI_FILES.map(f => ({ file: f, name: f.split('.')[0] }));
-        }
-    } catch (e) {
-        console.error('Failed to load emojis', e);
-        EMOJI_FILES = [];
-        emojisList = [];
-    }
+function setupEmojis() {
+    emojisList = EMOJI_FILES.map(f => {
+        let name = f.split('-').pop().split('.')[0].replace(/[^a-zA-Z]/g, '');
+        return { name, file: f };
+    });
+    selectedEmoji = emojisList[0];
 }
 
 const SERVER_URL = ''; // Relative path since we serve from same origin
