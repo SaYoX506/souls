@@ -39,7 +39,7 @@ app.get('/api/emojis', (req, res) => {
     });
 });
 
-const { uploadToGitHub, getJson, saveJson } = require('./lib/github');
+
 
 // API: Get Cloud Data
 app.get('/api/data', async (req, res) => {
