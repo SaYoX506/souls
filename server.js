@@ -38,7 +38,6 @@ app.get('/api/emojis', (req, res) => {
         res.json(emojis);
     });
 });
-});
 
 // PRIVATE IMAGE PROXY (For Private Repos)
 // Usage: /proxy-image?url=https://raw.githubusercontent.com/...
