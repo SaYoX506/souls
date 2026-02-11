@@ -1,22 +1,44 @@
 {
-  "users": {
-    "h.xkn": {
-      "username": "h.xkn",
-      "password": "1",
-      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=hxkn",
-      "level": 0,
-      "xp": 0,
-      "maxXp": 100,
-      "auditLog": []
-    },
-    "Chidori": {
-      "username": "Chidori",
-      "password": "1",
-      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=chidori",
-      "level": 0,
-      "xp": 0,
-      "maxXp": 100,
-      "auditLog": []
+  "hxkn": {
+    "id": "hxkn",
+    "name": "h.xkn",
+    "avatar": "",
+    "banner": "",
+    "avatarUrl": "",
+    "bannerUrl": "",
+    "colorGlow": "#ffffff",
+    "colorText": "#ffffff",
+    "colorBar": "#ffffff",
+    "colorBg": "#000000",
+    "level": 0,
+    "xp": 0,
+    "password": null,
+    "logs": [],
+    "rewards": {},
+    "status": {
+      "emoji": "",
+      "text": ""
+    }
+  },
+  "chidori": {
+    "id": "chidori",
+    "name": "Chidori",
+    "avatar": "",
+    "banner": "",
+    "avatarUrl": "",
+    "bannerUrl": "",
+    "colorGlow": "#ffffff",
+    "colorText": "#ffffff",
+    "colorBar": "#ffffff",
+    "colorBg": "#000000",
+    "level": 0,
+    "xp": 0,
+    "password": "2",
+    "logs": [],
+    "rewards": {},
+    "status": {
+      "emoji": "",
+      "text": ""
     }
   }
 }
