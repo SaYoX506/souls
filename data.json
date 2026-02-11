@@ -27,10 +27,10 @@
     "banner": "",
     "avatarUrl": "",
     "bannerUrl": "",
-    "colorGlow": "#ffffff",
-    "colorText": "#ffffff",
-    "colorBar": "#ffffff",
-    "colorBg": "#000000",
+    "colorGlow": "#ffffffff",
+    "colorText": "#ffffffff",
+    "colorBar": "#ffffffff",
+    "colorBg": "#000000ff",
     "level": 0,
     "xp": 0,
     "password": "2",
@@ -38,7 +38,7 @@
     "rewards": {},
     "status": {
       "emoji": "",
-      "text": ""
+      "text": "4"
     }
   }
 }
